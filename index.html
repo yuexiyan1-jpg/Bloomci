@@ -39,7 +39,6 @@
   .cats::-webkit-scrollbar { display: none; }
   .cat { padding: 6px 14px; border-radius: var(--radius-pill); font-size: 13px; white-space: nowrap; cursor: pointer; border: 0.5px solid var(--pk-border); color: #9D174D; background: var(--white); font-family: 'Nunito', sans-serif; transition: all 0.15s; }
   .cat.active { background: var(--pk-mid); color: #fff; border-color: var(--pk-mid); }
-  /* 特殊的自定义分类按钮 */
   .cat-plus { background: var(--pk-soft) !important; color: var(--pk-dark) !important; font-weight: 600 !important; border-color: var(--pk-mid) !important; }
 
   /* MAIN SCROLL AREA */
@@ -68,10 +67,10 @@
   .action-btn { font-size: 12px; padding: 7px 15px; border-radius: var(--radius-pill); background: var(--pk-mid); color: #fff; border: none; cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 500; }
 
   /* FORMS */
-  .form-page { padding: 20px 16px; text-align: center; }
-  .form-page h2 { font-size: 20px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
-  .form-page p { font-size: 13px; color: var(--text-muted); margin-bottom: 22px; line-height: 1.5; }
-  .submit-btn { width: 100%; padding: 14px; border-radius: var(--radius-pill); background: var(--pk-mid); color: #fff; border: none; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 8px; font-family: 'Nunito', sans-serif; text-decoration: none; display: inline-block; }
+  .form-page { padding: 40px 20px; text-align: center; }
+  .form-page h2 { font-size: 22px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+  .form-page p { font-size: 14px; color: var(--text-muted); margin-bottom: 30px; line-height: 1.5; }
+  .submit-btn { width: 100%; padding: 15px; border-radius: var(--radius-pill); background: var(--pk-mid); color: #fff; border: none; font-size: 16px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block; box-shadow: 0 4px 12px rgba(244,114,182,0.2); }
 
   /* TABBAR */
   .tabbar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 390px; background: var(--white); border-top: 0.5px solid var(--pk-border); display: flex; padding: 8px 0 max(12px, env(safe-area-inset-bottom)); z-index: 50; }
@@ -83,9 +82,9 @@
 
   /* BOTTOM SHEET */
   .overlay { position: fixed; inset: 0; background: rgba(190,24,93,0.12); display: flex; align-items: flex-end; z-index: 100; backdrop-filter: blur(2px); }
-  .sheet { background: var(--white); border-radius: 20px 20px 0 0; padding: 20px; width: 100%; max-width: 390px; margin: 0 auto; max-height: 82vh; overflow-y: auto; }
-  .btn-primary { flex: 1; padding: 12px; border-radius: var(--radius-pill); background: var(--pk-mid); color: #fff; border: none; font-size: 14px; font-weight: 500; text-align: center; text-decoration: none; display: block; }
-  .btn-sec { flex: 1; padding: 12px; border-radius: var(--radius-pill); background: var(--pk-soft); color: var(--pk-dark); border: 0.5px solid var(--pk-border); font-size: 14px; cursor: pointer; margin-top: 8px; width: 100%; }
+  .sheet { background: var(--white); border-radius: 24px 24px 0 0; padding: 24px; width: 100%; max-width: 390px; margin: 0 auto; max-height: 82vh; overflow-y: auto; }
+  .btn-primary { flex: 1; padding: 14px; border-radius: var(--radius-pill); background: var(--pk-mid); color: #fff; border: none; font-size: 15px; font-weight: 600; text-align: center; text-decoration: none; display: block; margin-top: 10px; }
+  .btn-sec { flex: 1; padding: 14px; border-radius: var(--radius-pill); background: var(--pk-soft); color: var(--pk-dark); border: 0.5px solid var(--pk-border); font-size: 15px; cursor: pointer; margin-top: 10px; width: 100%; }
 
   .page { display: none; }
   .page.active { display: block; }
@@ -156,25 +155,28 @@
 
   <div id="pg-demand" class="page">
     <div class="form-page">
-      <h2>发布新需求</h2>
-      <p>找不到想要的技能？直接发布需求，让大神来找你</p>
+      <h2>🚀 发布新需求</h2>
+      <p>找不到想要的技能？直接发布需求，<br>让校园里的大神们来主动找你！</p>
       <a href="https://pcnmk88r2xgt.feishu.cn/share/base/form/shrcnMJ72zlW4W78InWyRDHMz9b" class="submit-btn">立即发布需求 →</a>
     </div>
   </div>
 
   <div id="pg-post" class="page">
     <div class="form-page">
-      <h2>入驻人才库</h2>
-      <p>不管是专业技能还是奇葩才华，这里都能变现</p>
-      <a href="https://pcnmk88r2xgt.feishu.cn/share/base/form/shrcn61RgTQjm1JTvpKQNMP9wSd" class="submit-btn">立即入驻技能 →</a>
+      <h2>✨ 入驻人才库</h2>
+      <p>不管是专业技能还是生活小才华，<br>在 Bloomci 都能快速变现！</p>
+      <a href="https://pcnmk88r2xgt.feishu.cn/share/base/form/shrcn61RgTQjm1JTvpKQNMP9wSd" class="submit-btn">立即提交我的技能 →</a>
     </div>
   </div>
 
   <div id="pg-profile" class="page">
-    <div class="section" style="text-align:center; padding-top:40px;">
-      <div style="width:80px; height:80px; background:var(--pk-mid); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 15px; font-size:30px;">严</div>
-      <h3>Bloomci 创始人</h3>
-      <p style="color:var(--text-muted); margin-top:5px;">正在改变大学生的交易方式</p>
+    <div class="section" style="text-align:center; padding-top:60px;">
+      <div style="width:90px; height:90px; background:linear-gradient(135deg, var(--pk-mid), var(--pk-dark)); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:32px; font-weight:bold; box-shadow: 0 10px 20px rgba(190,24,93,0.15);">严</div>
+      <h3 style="font-size:20px;">Bloomci 创始人</h3>
+      <p style="color:var(--text-muted); margin-top:8px;">让校园技能自由流通</p>
+      <div style="margin-top:40px; background:var(--white); border-radius:20px; padding:20px; border:0.5px solid var(--pk-border);">
+         <p style="font-size:14px; color:var(--text-muted);">数据后台已由飞书提供支持 ✅</p>
+      </div>
     </div>
   </div>
 
@@ -193,37 +195,42 @@
 <script>
 function showSkill(i) {
   document.getElementById('sheet-content').innerHTML = `
-    <h3>技能详情</h3>
-    <p style="margin:10px 0; color:#666;">这是一个示例技能位。入驻后，你的专业作品和联系方式将出现在这里。</p>
+    <h3 style="font-size:18px;">技能详情</h3>
+    <p style="margin:15px 0; color:#666; line-height:1.6;">这是一个示例技能展示位。当你通过下方的“入驻”按钮提交后，你的专业作品、起步价和联系方式就会出现在这里。</p>
     <a href="https://pcnmk88r2xgt.feishu.cn/share/base/form/shrcn61RgTQjm1JTvpKQNMP9wSd" class="btn-primary">我也要入驻此位置 →</a>
-    <button class="btn-sec" onclick="closeSheet()">返回</button>
+    <button class="btn-sec" onclick="closeSheet()">返回首页</button>
   `;
   document.getElementById('overlay').classList.remove('hidden');
 }
+
 function showDemand(i) {
   document.getElementById('sheet-content').innerHTML = `
-    <h3>需求详情</h3>
-    <p style="margin:10px 0; color:#666;">看到心仪的需求了吗？点击下方按钮立即提交你的方案和报价。</p>
-    <a href="https://pcnmk88r2xgt.feishu.cn/share/base/form/shrcnnAkwH26C6GlVKH7HOimtCf" class="btn-primary">立即参与竞标/投标 →</a>
-    <button class="btn-sec" onclick="closeSheet()">返回</button>
+    <h3 style="font-size:18px;">需求详情</h3>
+    <p style="margin:15px 0; color:#666; line-height:1.6;">看到感兴趣的校园需求了吗？点击下方按钮，提交你的报价和方案，直接联系对方。</p>
+    <a href="https://pcnmk88r2xgt.feishu.cn/share/base/form/shrcnnAkwH26C6GlVKH7HOimtCf" class="btn-primary">立即参与投标/报价 →</a>
+    <button class="btn-sec" onclick="closeSheet()">返回首页</button>
   `;
   document.getElementById('overlay').classList.remove('hidden');
 }
+
 function closeSheet(e) {
   if (!e || e.target === document.getElementById('overlay')) document.getElementById('overlay').classList.add('hidden');
 }
+
 function goTab(t) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tb').forEach(tb => tb.classList.remove('active'));
   document.getElementById('pg-' + t).classList.add('active');
   document.getElementById('tb-' + t).classList.add('active');
 }
+
 function switchView(el, view) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
   document.getElementById('view-skills').classList.toggle('hidden', view !== 'skills');
   document.getElementById('view-demands').classList.toggle('hidden', view !== 'demands');
 }
+
 function filterCat(el, cat) {
   document.querySelectorAll('.cat').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
