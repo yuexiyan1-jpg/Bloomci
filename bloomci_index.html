@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>Bloomci · 技能交易平台</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  :root {
+    --pk: #F9A8C9;
+    --pk-light: #FDF0F5;
+    --pk-mid: #F472B6;
+    --pk-dark: #BE185D;
+    --pk-border: #FBCFE8;
+    --pk-soft: #FCE7F3;
+    --text: #1a1a1a;
+    --text-muted: #6b7280;
+    --text-hint: #9ca3af;
+    --bg: #FFF8FB;
+    --white: #ffffff;
+    --radius: 16px;
+    --radius-sm: 12px;
+    --radius-pill: 20px;
+  }
+  html, body { height: 100%; background: var(--bg); font-family: 'Nunito', sans-serif; }
+  .app { max-width: 390px; margin: 0 auto; background: var(--bg); min-height: 100vh; display: flex; flex-direction: column; }
+
+  /* HEADER */
+  .header { background: var(--white); padding: 16px; border-bottom: 0.5px solid var(--pk-border); }
+  .logo { font-size: 22px; font-weight: 600; color: var(--text); margin-bottom: 10px; letter-spacing: -0.5px; }
+  .logo span { color: var(--pk-mid); }
+  .search-bar { display: flex; align-items: center; background: var(--pk-light); border-radius: var(--radius-pill); padding: 9px 14px; gap: 8px; border: 0.5px solid var(--pk-border); }
+  .search-bar input { border: none; background: transparent; font-size: 14px; color: var(--text); outline: none; flex: 1; font-family: 'Nunito', sans-serif; }
+  .search-bar input::placeholder { color: var(--text-hint); }
+
+  /* CATS */
+  .cats { display: flex; gap: 8px; padding: 12px 16px; background: var(--white); overflow-x: auto; scrollbar-width: none; border-bottom: 0.5px solid var(--pk-border); }
+  .cats::-webkit-scrollbar { display: none; }
+  .cat { padding: 6px 14px; border-radius: var(--radius-pill); font-size: 13px; white-space: nowrap; cursor: pointer; border: 0.5px solid var(--pk-border); color: #9D174D; background: var(--white); font-family: 'Nunito', sans-serif; transition: all 0.15s; }
+  .cat.active { background: var(--pk-mid); color: #fff; border-color: var(--pk-mid); }
+
+  /* MAIN SCROLL AREA */
+  .main { flex: 1; overflow-y: auto; padding-bottom: 80px; }
+  .section { padding: 16px; }
+
+  /* VIEW TABS */
+  .tabs-row { display: flex; background: var(--pk-soft); border-radius: var(--radius-pill); padding: 3px; margin-bottom: 14px; }
+  .tab-btn { flex: 1; padding: 8px; font-size: 13px; border: none; background: transparent; color: #9D174D; border-radius: 18px; cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 500; transition: all 0.15s; }
+  .tab-btn.active { background: var(--white); color: var(--pk-dark); box-shadow: 0 1px 3px rgba(190,24,93,0.1); }
+
+  /* CARDS */
+  .cards { display: flex; flex-direction: column; gap: 10px; }
+  .card { background: var(--white); border-radius: var(--radius); border: 0.5px solid var(--pk-border); padding: 14px; cursor: pointer; transition: border-color 0.15s; }
+  .card:active { border-color: var(--pk-mid); }
+  .card-top { display: flex; gap: 12px; align-items: flex-start; }
+  .avatar { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600; flex-shrink: 0; }
+  .av1 { background: #FCE7F3; color: #BE185D; }
+  .av2 { background: #FDF4FF; color: #7E22CE; }
+  .av3 { background: #FFF7ED; color: #C2410C; }
+  .av4 { background: #F0FDF4; color: #166534; }
+  .av5 { background: #EFF6FF; color: #1D4ED8; }
+  .card-info { flex: 1; min-width: 0; }
+  .card-name { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .card-skill { font-size: 13px; color: var(--text-muted); margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+  .tag { font-size: 11px; padding: 2px 8px; border-radius: 10px; background: var(--pk-soft); color: #9D174D; border: 0.5px solid var(--pk-border); }
+  .tag-hot { background: #FEF3C7; color: #92400E; border-color: #FDE68A; }
+  .card-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 0.5px solid var(--pk-border); }
+  .price { font-size: 15px; font-weight: 600; color: var(--pk-dark); }
+  .price-sub { font-size: 11px; color: var(--text-hint); }
+  .action-btn { font-size: 12px; padding: 7px 15px; border-radius: var(--radius-pill); background: var(--pk-mid); color: #fff; border: none; cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 500; }
+  .deadline-badge { font-size: 11px; color: #92400E; background: #FEF3C7; padding: 3px 9px; border-radius: 10px; border: 0.5px solid #FDE68A; }
+
+  /* FORMS */
+  .form-page { padding: 20px 16px; }
+  .form-page h2 { font-size: 20px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .form-page p { font-size: 13px; color: var(--text-muted); margin-bottom: 22px; line-height: 1.5; }
+  .form-group { margin-bottom: 14px; }
+  .form-group label { font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 6px; font-weight: 500; }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: 11px 14px; border-radius: var(--radius-sm);
+    border: 0.5px solid var(--pk-border); background: var(--white);
+    font-size: 14px; color: var(--text); outline: none;
+    font-family: 'Nunito', sans-serif; transition: border-color 0.15s;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--pk-mid); }
+  .form-group textarea { min-height: 88px; resize: vertical; line-height: 1.5; }
+  .submit-btn { width: 100%; padding: 14px; border-radius: var(--radius-pill); background: var(--pk-mid); color: #fff; border: none; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 8px; font-family: 'Nunito', sans-serif; transition: opacity 0.15s; }
+  .submit-btn:active { opacity: 0.85; }
+
+  /* PROFILE */
+  .profile-page { padding: 16px; }
+  .profile-header { background: linear-gradient(135deg, #FCE7F3 0%, #FDF4FF 100%); border-radius: var(--radius); border: 0.5px solid var(--pk-border); padding: 26px 20px; text-align: center; margin-bottom: 14px; }
+  .profile-av { width: 64px; height: 64px; border-radius: 50%; background: var(--pk-mid); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 600; margin: 0 auto 12px; }
+  .profile-name { font-size: 17px; font-weight: 600; color: var(--text); }
+  .profile-bio { font-size: 13px; color: #9D174D; margin-top: 4px; }
+  .stat-row { display: flex; gap: 8px; margin-bottom: 14px; }
+  .stat { flex: 1; background: var(--white); border-radius: var(--radius-sm); border: 0.5px solid var(--pk-border); padding: 12px; text-align: center; }
+  .stat-num { font-size: 22px; font-weight: 600; color: var(--pk-mid); }
+  .stat-label { font-size: 11px; color: var(--text-hint); margin-top: 2px; }
+  .menu-list { background: var(--white); border-radius: var(--radius); border: 0.5px solid var(--pk-border); overflow: hidden; }
+  .menu-item { padding: 15px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 0.5px solid var(--pk-border); font-size: 14px; color: var(--text); cursor: pointer; }
+  .menu-item:last-child { border-bottom: none; }
+  .menu-arrow { color: #d1a8b8; font-size: 14px; }
+
+  /* PAGES */
+  .page { display: none; }
+  .page.active { display: block; }
+  .hidden { display: none !important; }
+
+  /* TABBAR */
+  .tabbar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 390px; background: var(--white); border-top: 0.5px solid var(--pk-border); display: flex; padding: 8px 0 max(12px, env(safe-area-inset-bottom)); z-index: 50; }
+  .tb { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; }
+  .tb svg { width: 22px; height: 22px; color: #d1a8b8; transition: color 0.15s; }
+  .tb.active svg { color: var(--pk-mid); }
+  .tb-label { font-size: 10px; color: #d1a8b8; font-family: 'Nunito', sans-serif; transition: color 0.15s; }
+  .tb.active .tb-label { color: var(--pk-mid); }
+
+  /* BOTTOM SHEET */
+  .overlay { position: fixed; inset: 0; background: rgba(190,24,93,0.12); display: flex; align-items: flex-end; z-index: 100; backdrop-filter: blur(2px); }
+  .sheet { background: var(--white); border-radius: 20px 20px 0 0; padding: 20px; width: 100%; max-width: 390px; margin: 0 auto; max-height: 82vh; overflow-y: auto; border-top: 2px solid var(--pk-border); }
+  .sheet-title { font-size: 17px; font-weight: 600; margin-bottom: 4px; color: var(--text); }
+  .sheet-sub { font-size: 13px; color: #9D174D; margin-bottom: 16px; }
+  .info-row { display: flex; gap: 8px; font-size: 13px; margin-bottom: 10px; }
+  .info-label { color: var(--text-hint); min-width: 56px; flex-shrink: 0; }
+  .info-val { color: var(--text); line-height: 1.5; }
+  .sheet-btns { display: flex; gap: 10px; margin-top: 16px; }
+  .btn-primary { flex: 1; padding: 12px; border-radius: var(--radius-pill); background: var(--pk-mid); color: #fff; border: none; font-size: 14px; cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 500; }
+  .btn-sec { flex: 1; padding: 12px; border-radius: var(--radius-pill); background: var(--pk-soft); color: var(--pk-dark); border: 0.5px solid var(--pk-border); font-size: 14px; cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 500; }
+  .bids-list { margin-top: 16px; border-top: 0.5px solid var(--pk-border); padding-top: 14px; }
+  .bids-title { font-size: 13px; font-weight: 600; color: #9D174D; margin-bottom: 10px; }
+  .bid-item { background: var(--pk-light); border-radius: var(--radius-sm); padding: 11px 13px; margin-bottom: 8px; border: 0.5px solid var(--pk-border); }
+  .bid-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .bid-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .bid-price { font-size: 14px; font-weight: 600; color: var(--pk-dark); }
+  .bid-desc { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+
+  /* SUCCESS TOAST */
+  .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #BE185D; color: #fff; padding: 10px 20px; border-radius: var(--radius-pill); font-size: 14px; font-weight: 500; z-index: 200; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- HOME PAGE -->
+  <div id="pg-home" class="page active">
+    <div class="header">
+      <div class="logo">Bloom<span>ci</span></div>
+      <div class="search-bar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F472B6" stroke-width="2.5" style="flex-shrink:0"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" placeholder="搜索技能或需求…" />
+      </div>
+    </div>
+    <div class="cats">
+      <div class="cat active" onclick="filterCat(this,'全部')">全部</div>
+      <div class="cat" onclick="filterCat(this,'设计')">设计</div>
+      <div class="cat" onclick="filterCat(this,'写作')">写作</div>
+      <div class="cat" onclick="filterCat(this,'编程')">编程</div>
+      <div class="cat" onclick="filterCat(this,'翻译')">翻译</div>
+      <div class="cat" onclick="filterCat(this,'视频')">视频</div>
+    </div>
+    <div class="main">
+      <div class="section">
+        <div class="tabs-row">
+          <button class="tab-btn active" onclick="switchView(this,'skills')">技能广场</button>
+          <button class="tab-btn" onclick="switchView(this,'demands')">需求竞标</button>
+        </div>
+
+        <!-- SKILLS -->
+        <div id="view-skills">
+          <div class="cards">
+            <div class="card" data-cat="设计" onclick="showSkill(0)">
+              <div class="card-top">
+                <div class="avatar av1">林</div>
+                <div class="card-info">
+                  <div class="card-name">林晓雨</div>
+                  <div class="card-skill">品牌视觉设计 / Logo设计</div>
+                  <div class="card-tags"><span class="tag">设计</span><span class="tag">品牌</span><span class="tag">Figma</span></div>
+                </div>
+              </div>
+              <div class="card-bottom">
+                <div><div class="price">¥200起</div><div class="price-sub">按项目报价</div></div>
+                <div style="font-size:12px;color:#9ca3af">⭐ 4.9 · 32单</div>
+                <button class="action-btn">联系TA</button>
+              </div>
+            </div>
+            <div class="card" data-cat="编程" onclick="showSkill(1)">
+              <div class="card-top">
+                <div class="avatar av2">张</div>
+                <div class="card-info">
+                  <div class="card-name">张伟</div>
+                  <div class="card-skill">小程序开发 / 网页前端</div>
+                  <div class="card-tags"><span class="tag">编程</span><span class="tag">微信</span><span class="tag">Vue</span></div>
+                </div>
+              </div>
+              <div class="card-bottom">
+                <div><div class="price">¥500起</div><div class="price-sub">按项目报价</div></div>
+                <div style="font-size:12px;color:#9ca3af">⭐ 4.8 · 18单</div>
+                <button class="action-btn">联系TA</button>
+              </div>
+            </div>
+            <div class="card" data-cat="写作" onclick="showSkill(2)">
+              <div class="card-top">
+                <div class="avatar av3">陈</div>
+                <div class="card-info">
+                  <div class="card-name">陈思远</div>
+                  <div class="card-skill">公众号文章 / 品牌文案</div>
+                  <div class="card-tags"><span class="tag">写作</span><span class="tag">文案</span><span class="tag">新媒体</span></div>
+                </div>
+              </div>
+              <div class="card-bottom">
+                <div><div class="price">¥150起</div><div class="price-sub">按字数/篇</div></div>
+                <div style="font-size:12px;color:#9ca3af">⭐ 4.7 · 56单</div>
+                <button class="action-btn">联系TA</button>
+              </div>
+            </div>
+            <div class="card" data-cat="翻译" onclick="showSkill(3)">
+              <div class="card-top">
+                <div class="avatar av4">王</div>
+                <div class="card-info">
+                  <div class="card-name">王芳</div>
+                  <div class="card-skill">英中翻译 / 商务文件</div>
+                  <div class="card-tags"><span class="tag">翻译</span><span class="tag">英语</span><span class="tag">商务</span></div>
+                </div>
+              </div>
+              <div class="card-bottom">
+                <div><div class="price">¥80起</div><div class="price-sub">每千字</div></div>
+                <div style="font-size:12px;color:#9ca3af">⭐ 5.0 · 41单</div>
+                <button class="action-btn">联系TA</button>
+              </div>
+            </div>
+            <div class="card" data-cat="视频" onclick="showSkill(4)">
+              <div class="card-top">
+                <div class="avatar av5">刘</div>
+                <div class="card-info">
+                  <div class="card-name">刘明</div>
+                  <div class="card-skill">短视频剪辑 / 字幕制作</div>
+                  <div class="card-tags"><span class="tag">视频</span><span class="tag">剪辑</span><span class="tag">PR</span></div>
+                </div>
+              </div>
+              <div class="card-bottom">
+                <div><div class="price">¥300起</div><div class="price-sub">按分钟报价</div></div>
+                <div style="font-size:12px;color:#9ca3af">⭐ 4.6 · 27单</div>
+                <button class="action-btn">联系TA</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DEMANDS -->
+        <div id="view-demands" class="hidden">
+          <div class="cards">
+            <div class="card" data-cat="设计" onclick="showDemand(0)">
+              <div class="card-top">
+                <div class="avatar av1">需</div>
+                <div class="card-info">
+                  <div class="card-name">需要一个科技公司Logo</div>
+                  <div class="card-skill">设计 · 预算 ¥300-500</div>
+                  <div class="card-tags"><span class="tag">设计</span><span class="tag tag-hot">热门</span></div>
+                </div>
+              </div>
+              <div class="card-bottom">
+                <span class="deadline-badge">3天后截止</span>
+                <div style="font-size:12px;color:#9ca3af">5人投标</div>
+                <button class="action-btn">我要投标</button>
+              </div>
+            </div>
+            <div class="card" data-cat="编程" onclick="showDemand(1)">
+              <div class="card-top">
+                <div class="avatar av2">需</div>
+                <div class="card-info">
+                  <div class="card-name">开发一个外卖小程序</div>
+                  <div class="card-skill">编程 · 预算 ¥3000-5000</div>
+                  <div class="card-tags"><span class="tag">编程</span><span class="tag">小程序</span></div>
+                </div>
+              </div>
+              <div class="card-bottom">
+                <span class="deadline-badge">7天后截止</span>
+                <div style="font-size:12px;color:#9ca3af">3人投标</div>
+                <button class="action-btn">我要投标</button>
+              </div>
+            </div>
+            <div class="card" data-cat="翻译" onclick="showDemand(2)">
+              <div class="card-top">
+                <div class="avatar av5">需</div>
+                <div class="card-info">
+                  <div class="card-name">英文合同翻译，约5000字</div>
+                  <div class="card-skill">翻译 · 预算 ¥400-600</div>
+                  <div class="card-tags"><span class="tag">翻译</span><span class="tag">英语</span></div>
+                </div>
+              </div>
+              <div class="card-bottom">
+                <span class="deadline-badge">2天后截止</span>
+                <div style="font-size:12px;color:#9ca3af">8人投标</div>
+                <button class="action-btn">我要投标</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEMAND PAGE -->
+  <div id="pg-demand" class="page">
+    <div class="main">
+      <div class="form-page">
+        <h2>发布需求</h2>
+        <p>描述你的需求，收到多个专业人士的投标方案</p>
+        <div class="form-group"><label>需求类别</label><select><option>设计</option><option>写作</option><option>编程</option><option>翻译</option><option>视频</option><option>其他</option></select></div>
+        <div class="form-group"><label>需求标题</label><input type="text" placeholder="如：需要设计一个品牌Logo" /></div>
+        <div class="form-group"><label>详细描述</label><textarea placeholder="详细说明需求内容、风格偏好、参考案例…"></textarea></div>
+        <div class="form-group"><label>预算范围</label><select><option>500元以内</option><option>500-1000元</option><option>1000-3000元</option><option>3000-5000元</option><option>5000元以上</option><option>面议</option></select></div>
+        <div class="form-group"><label>截止日期</label><input type="date" /></div>
+        <div class="form-group"><label>你的微信号</label><input type="text" placeholder="选定投标人后用于联系" /></div>
+        <button class="submit-btn" onclick="showToast('需求发布成功！等待投标方案')">发布需求</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- POST SKILL PAGE -->
+  <div id="pg-post" class="page">
+    <div class="main">
+      <div class="form-page">
+        <h2>发布技能</h2>
+        <p>展示你的专业能力，直接接单或参与竞标</p>
+        <div class="form-group"><label>技能类别</label><select><option>设计</option><option>写作</option><option>编程</option><option>翻译</option><option>视频</option><option>其他</option></select></div>
+        <div class="form-group"><label>技能标题</label><input type="text" placeholder="如：品牌Logo设计，交付AI源文件" /></div>
+        <div class="form-group"><label>详细描述</label><textarea placeholder="介绍你的经验、作品风格、服务内容…"></textarea></div>
+        <div class="form-group"><label>起步价格（元）</label><input type="number" placeholder="如：200" /></div>
+        <div class="form-group"><label>你的微信号</label><input type="text" placeholder="客户联系方式" /></div>
+        <button class="submit-btn" onclick="showToast('技能发布成功！')">发布技能</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROFILE PAGE -->
+  <div id="pg-profile" class="page">
+    <div class="main">
+      <div class="profile-page">
+        <div class="profile-header">
+          <div class="profile-av">我</div>
+          <div class="profile-name">登录后查看主页</div>
+          <div class="profile-bio">接单 · 投标 · 发需求</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat"><div class="stat-num">0</div><div class="stat-label">我的技能</div></div>
+          <div class="stat"><div class="stat-num">0</div><div class="stat-label">我的投标</div></div>
+          <div class="stat"><div class="stat-num">0</div><div class="stat-label">我的需求</div></div>
+        </div>
+        <div class="menu-list">
+          <div class="menu-item">我发布的技能 <span class="menu-arrow">›</span></div>
+          <div class="menu-item">我的投标记录 <span class="menu-arrow">›</span></div>
+          <div class="menu-item">我发布的需求 <span class="menu-arrow">›</span></div>
+          <div class="menu-item">帮助与反馈 <span class="menu-arrow">›</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABBAR -->
+  <div class="tabbar">
+    <div class="tb active" id="tb-home" onclick="goTab('home')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9.75L12 3l9 6.75V21H15v-5.25H9V21H3z"/></svg>
+      <span class="tb-label">首页</span>
+    </div>
+    <div class="tb" id="tb-demand" onclick="goTab('demand')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M8 8h8M8 16h5"/></svg>
+      <span class="tb-label">发需求</span>
+    </div>
+    <div class="tb" id="tb-post" onclick="goTab('post')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+      <span class="tb-label">发技能</span>
+    </div>
+    <div class="tb" id="tb-profile" onclick="goTab('profile')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      <span class="tb-label">我的</span>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM SHEET -->
+<div class="overlay hidden" id="overlay" onclick="closeSheet(event)">
+  <div class="sheet" id="sheet-content"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const skills = [
+  { name:'林晓雨', skill:'品牌视觉设计 / Logo设计', price:'¥200起', wechat:'linxiaoyu_design', desc:'5年品牌设计经验，服务过50+企业，擅长简约现代风格，交付AI+PDF源文件。', rating:'4.9', orders:32 },
+  { name:'张伟', skill:'小程序开发 / 网页前端', price:'¥500起', wechat:'zhangwei_dev', desc:'全栈工程师，擅长微信小程序和Vue开发，可独立完成从设计到上线全流程。', rating:'4.8', orders:18 },
+  { name:'陈思远', skill:'公众号文章 / 品牌文案', price:'¥150起', wechat:'chensiyuan_write', desc:'前媒体人，专注科技/商业/生活方式赛道，10万+爆文经验，按时交稿。', rating:'4.7', orders:56 },
+  { name:'王芳', skill:'英中翻译 / 商务文件', price:'¥80起', wechat:'wangfang_trans', desc:'英语专业硕士，擅长商务合同、产品文档、学术论文翻译，隔日交稿。', rating:'5.0', orders:41 },
+  { name:'刘明', skill:'短视频剪辑 / 字幕制作', price:'¥300起', wechat:'liuming_video', desc:'擅长抖音/B站风格剪辑，动效字幕，支持竖屏横屏多格式输出。', rating:'4.6', orders:27 },
+];
+const demands = [
+  { title:'需要一个科技公司Logo', cat:'设计', budget:'¥300-500', desc:'初创科技公司，需要简约现代风格的Logo，要求交付AI源文件和各尺寸PNG。', deadline:'3天后', bids:[{name:'林晓雨',price:'¥350',desc:'可提供3套方案，3天内交付'},{name:'王设计',price:'¥400',desc:'5年品牌经验，附作品集'},{name:'小明工作室',price:'¥280',desc:'性价比高，当日出初稿'}] },
+  { title:'开发一个外卖小程序', cat:'编程', budget:'¥3000-5000', desc:'需要完整的外卖平台小程序，包含用户端、商家端和配送端，需接入微信支付。', deadline:'7天后', bids:[{name:'张伟',price:'¥4500',desc:'全栈开发，含后台管理系统'},{name:'前端工作室',price:'¥3800',desc:'团队接单，质量保证'}] },
+  { title:'英文合同翻译，约5000字', cat:'翻译', budget:'¥400-600', desc:'商务合同英译中，专业术语较多，要求有法律/商务翻译经验，2天内交付。', deadline:'2天后', bids:[{name:'王芳',price:'¥480',desc:'英语硕士，有商务合同经验'},{name:'李译',price:'¥420',desc:'CFA持证，金融法律翻译专业'},{name:'翻译达人',price:'¥550',desc:'隔日交付，包修改'}] },
+];
+
+function showSkill(i) {
+  const s = skills[i];
+  document.getElementById('sheet-content').innerHTML = `
+    <div class="sheet-title">${s.name}</div>
+    <div class="sheet-sub">${s.skill}</div>
+    <div class="info-row"><span class="info-label">价格</span><span class="info-val" style="color:#BE185D;font-weight:600">${s.price}</span></div>
+    <div class="info-row"><span class="info-label">评分</span><span class="info-val">⭐ ${s.rating} · 已完成${s.orders}单</span></div>
+    <div class="info-row"><span class="info-label">简介</span><span class="info-val">${s.desc}</span></div>
+    <div class="info-row"><span class="info-label">微信号</span><span class="info-val" style="color:#7E22CE">${s.wechat}</span></div>
+    <div class="sheet-btns">
+      <button class="btn-primary" onclick="copyWechat('${s.wechat}')">复制微信号</button>
+      <button class="btn-sec" onclick="closeSheet()">关闭</button>
+    </div>
+  `;
+  document.getElementById('overlay').classList.remove('hidden');
+}
+
+function showDemand(i) {
+  const d = demands[i];
+  const bidsHtml = d.bids.map(b => `
+    <div class="bid-item">
+      <div class="bid-top"><span class="bid-name">${b.name}</span><span class="bid-price">${b.price}</span></div>
+      <div class="bid-desc">${b.desc}</div>
+    </div>
+  `).join('');
+  document.getElementById('sheet-content').innerHTML = `
+    <div class="sheet-title">${d.title}</div>
+    <div class="sheet-sub">${d.cat} · 预算 ${d.budget} · ${d.deadline}截止</div>
+    <div class="info-row"><span class="info-label">描述</span><span class="info-val">${d.desc}</span></div>
+    <div class="sheet-btns">
+      <button class="btn-primary" onclick="showBidForm(${i})">我要投标 →</button>
+      <button class="btn-sec" onclick="closeSheet()">关闭</button>
+    </div>
+    <div class="bids-list">
+      <div class="bids-title">已收到 ${d.bids.length} 个投标</div>
+      ${bidsHtml}
+    </div>
+  `;
+  document.getElementById('overlay').classList.remove('hidden');
+}
+
+function showBidForm(i) {
+  const d = demands[i];
+  document.getElementById('sheet-content').innerHTML = `
+    <div class="sheet-title">投标：${d.title}</div>
+    <div class="sheet-sub">提交你的方案和报价</div>
+    <div class="form-group"><label>你的姓名/昵称</label><input type="text" placeholder="如：林晓雨" /></div>
+    <div class="form-group"><label>报价（元）</label><input type="number" placeholder="如：350" /></div>
+    <div class="form-group"><label>方案描述</label><textarea placeholder="简述你的方案、优势、交付时间…"></textarea></div>
+    <div class="form-group"><label>你的微信号</label><input type="text" placeholder="买家选中后联系你" /></div>
+    <div class="sheet-btns">
+      <button class="btn-primary" onclick="showToast('投标成功！等待买家选择');closeSheet()">提交投标</button>
+      <button class="btn-sec" onclick="showDemand(${i})">← 返回</button>
+    </div>
+  `;
+}
+
+function copyWechat(wechat) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(wechat).then(() => showToast('微信号已复制：' + wechat));
+  } else {
+    showToast('微信号：' + wechat);
+  }
+}
+
+function closeSheet(e) {
+  if (!e || e.target === document.getElementById('overlay')) {
+    document.getElementById('overlay').classList.add('hidden');
+  }
+}
+
+function goTab(t) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tb').forEach(tb => tb.classList.remove('active'));
+  document.getElementById('pg-' + t).classList.add('active');
+  document.getElementById('tb-' + t).classList.add('active');
+}
+
+function switchView(el, view) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('view-skills').classList.toggle('hidden', view !== 'skills');
+  document.getElementById('view-demands').classList.toggle('hidden', view !== 'demands');
+}
+
+function filterCat(el, cat) {
+  document.querySelectorAll('.cat').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.card').forEach(c => {
+    c.style.display = (cat === '全部' || c.dataset.cat === cat) ? 'block' : 'none';
+  });
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
+</body>
+</html>
